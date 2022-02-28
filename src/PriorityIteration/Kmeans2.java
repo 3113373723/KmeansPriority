@@ -92,7 +92,6 @@ public class Kmeans2 {
                     // 应该没问题，第一遍full EM不会进入到这，以后的才会，每次处理达到一个batch的数量counterOfIterations就会加一
                 }
             }//for
-            if (baseErr < 315658) isContinue = false;
             // 不明白为什么updateCenters(M-step)只在dataProCounters==1时运行过一次，个人认为每遍都需要更新
             if (dataProCounters == 1) {
                 System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
@@ -103,6 +102,7 @@ public class Kmeans2 {
                 hasPro = 0;
                 changeTagCount = 0;
             }
+            if (baseErr < 315658) isContinue = false;
             counterOfIterations++;
             centers = updateCenters(aggOfSum, aggOfCounter);//Maximization step
             // Lazy EM
