@@ -113,8 +113,6 @@ public class Kmeans2 {
                 CntOfLazy--;
                 dataProCounters++;
                 double AverageDis = 0;
-                double[][] LazyAggOfSum = new double[numOfCenters][numOfDimensions]; //每个Lazy质心的数据和
-                int[] LazyAggOfCounter = new int[numOfCenters]; //每个质心下的point的数量
                 // 计算平均最小距离，用来区分数据优先级
                 for (double Dis : laseErr) {
                     AverageDis += Dis;
@@ -122,22 +120,10 @@ public class Kmeans2 {
                 AverageDis /= laseErr.length;//这里用的是小于averageDIs的数据为优先级高的，也可以乘以某个参数进一步限制数据点个数
                 for (int index = 0; index < points.size(); index++) { //遍历全部数据
                     if (laseErr[index] > AverageDis) continue;
-                    LazyAggregate(LazyAggOfSum, LazyAggOfCounter, points.get(index), tags[index]);
-                }
-                // Maximization step
-                LazyCenters = LazyUpdateCenters(LazyAggOfSum, LazyAggOfCounter);
-                for (int i = 0; i < numOfCenters; i++) {
-                    // 如果由于优先级划分导致lazy EM阶段某质心数据样本为0，则设置为原来的质心
-                    if (LazyAggOfCounter[i] == 0) LazyCenters[i] = centers[i];
-                }
-
-                // Expectation step
-                for (int index = 0; index < points.size(); index++) { //遍历全部数据
-                    if (laseErr[index] > AverageDis) continue;
                     minDist = Double.MAX_VALUE;
                     tag = -1;
                     for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
-                        dist = distance(points.get(index), LazyCenters[i]);
+                        dist = distance(points.get(index), centers[i]);
                         if (dist < minDist) {
                             minDist = dist;
                             tag = i;
@@ -161,6 +147,7 @@ public class Kmeans2 {
                     // 更新最短距离
                     laseErr[index] = minDist;
                 }// end E-step
+                updateCenters(aggOfSum, aggOfCounter);
                 System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.newLine();
@@ -170,7 +157,6 @@ public class Kmeans2 {
                 counterOfIterations++;
             }// end Lazy EM
 
-            centers = LazyCenters;
         } //while
         bw.write(stringOfCenters(counterOfIterations, centers));
         /** 获取当前的系统时间，与初始时间相减就是程序运行的毫秒数，除以1000就是秒数*/
