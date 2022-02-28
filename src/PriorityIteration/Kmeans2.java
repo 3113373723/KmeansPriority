@@ -45,12 +45,13 @@ public class Kmeans2 {
         int CntOfLazy; //Lazy EM每次执行的次数
         ArrayList<Double>[] LazyCenters = centers; //定义lazyEM质心
         double[] laseErr = new double[points.size()];
+        boolean isContinue = true; //设置一个变量控制迭代是否继续，当达到收敛值时改为false
 
         /** 获取当前系统时间*/
         long startTime = System.currentTimeMillis();
 
         //开始迭代
-        while (counterOfIterations < numOfIterations) {
+        while (counterOfIterations < numOfIterations && isContinue) {
 
             dataProCounters++;
             // FULL EM
@@ -91,6 +92,7 @@ public class Kmeans2 {
                     // 应该没问题，第一遍full EM不会进入到这，以后的才会，每次处理达到一个batch的数量counterOfIterations就会加一
                 }
             }//for
+            if (baseErr < 315658) isContinue = false;
             // 不明白为什么updateCenters(M-step)只在dataProCounters==1时运行过一次，个人认为每遍都需要更新
             if (dataProCounters == 1) {
                 System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
@@ -109,7 +111,7 @@ public class Kmeans2 {
             // 每次Full EM后要进行若干次lazy EM，可设置次数
             CntOfLazy = 2;
 
-            while (CntOfLazy != 0 && counterOfIterations < numOfIterations) {
+            while (CntOfLazy != 0 && counterOfIterations < numOfIterations && isContinue) {
                 CntOfLazy--;
                 dataProCounters++;
                 double AverageDis = 0;
@@ -155,6 +157,7 @@ public class Kmeans2 {
                 hasPro = 0;
                 changeTagCount = 0;
                 counterOfIterations++;
+                if (baseErr < 315658) isContinue = false;
             }// end Lazy EM
 
         } //while
