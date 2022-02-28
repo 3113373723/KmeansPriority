@@ -49,7 +49,6 @@ public class Kmeans2 {
         /** 获取当前系统时间*/
         long startTime = System.currentTimeMillis();
 
-
         //开始迭代
         while (counterOfIterations < numOfIterations) {
 
@@ -69,7 +68,6 @@ public class Kmeans2 {
                     }
                 }//for distance
 
-
                 if (tags[index] != tag) {
                     aggregate(aggOfSum, aggOfCounter, points.get(index),
                             tag, tags[index], dataProCounters);
@@ -82,7 +80,6 @@ public class Kmeans2 {
                     baseErr += (minDist - laseErr[index]);
                 }
                 laseErr[index] = minDist;
-
 
                 if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
                     System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
@@ -163,15 +160,6 @@ public class Kmeans2 {
                     }
                     // 更新最短距离
                     laseErr[index] = minDist;
-// 这部分是lazyBatch+minibatch，暂时先不用
-//                    if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
-//                        System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-//                        bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-//                        bw.newLine();
-//                        batchError = 0;
-//                        hasPro = 0;
-//                        changeTagCount = 0;
-//                    }
                 }// end E-step
                 System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
@@ -185,15 +173,13 @@ public class Kmeans2 {
             centers = LazyCenters;
         } //while
         bw.write(stringOfCenters(counterOfIterations, centers));
+        /** 获取当前的系统时间，与初始时间相减就是程序运行的毫秒数，除以1000就是秒数*/
         long endTime = System.currentTimeMillis();
         double usedTime = (endTime - startTime) / (double) 1000;
         System.out.println("Total Time is : " + usedTime + "s");
         bw.write(" Total Time is : " + usedTime + "s");
         bw.close();
         fw.close();
-        /** 获取当前的系统时间，与初始时间相减就是程序运行的毫秒数，除以1000就是秒数*/
-
-
     }
 
     /**
