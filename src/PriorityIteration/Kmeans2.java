@@ -46,6 +46,7 @@ public class Kmeans2 {
         ArrayList<Double>[] LazyCenters = centers; //定义lazyEM质心
         double[] laseErr = new double[points.size()];
         boolean isContinue = true; //设置一个变量控制迭代是否继续，当达到收敛值时改为false
+        double sigma = 1;
 
         /** 获取当前系统时间*/
         long startTime = System.currentTimeMillis();
@@ -102,7 +103,7 @@ public class Kmeans2 {
                 hasPro = 0;
                 changeTagCount = 0;
             }
-            if (baseErr < 315658) isContinue = false;
+            if (baseErr < 311555) isContinue = false;
             counterOfIterations++;
             centers = updateCenters(aggOfSum, aggOfCounter);//Maximization step
             // Lazy EM
@@ -121,7 +122,7 @@ public class Kmeans2 {
                 }
                 AverageDis /= laseErr.length;//这里用的是小于averageDIs的数据为优先级高的，也可以乘以某个参数进一步限制数据点个数
                 for (int index = 0; index < points.size(); index++) { //遍历全部数据
-                    if (laseErr[index] > AverageDis) continue;
+                    if (laseErr[index] > sigma * AverageDis) continue;
                     minDist = Double.MAX_VALUE;
                     tag = -1;
                     for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
@@ -157,7 +158,7 @@ public class Kmeans2 {
                 hasPro = 0;
                 changeTagCount = 0;
                 counterOfIterations++;
-                if (baseErr < 315658) isContinue = false;
+                if (baseErr < 311555) isContinue = false;
             }// end Lazy EM
 
         } //while
