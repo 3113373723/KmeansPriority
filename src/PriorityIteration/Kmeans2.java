@@ -83,7 +83,7 @@ public class Kmeans2 {
                 }
                 laseErr[index] = minDist;
 
-                if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
+                if (hasPro >= batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
                     System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                     bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                     bw.newLine();
@@ -112,7 +112,7 @@ public class Kmeans2 {
             // 正常来说应该是先E再M，但是第一遍E没有意义（Dn-1==Dn),so 先M，之后再EM这样进行
             // E就是计算距离，M就是确定质心
             // 每次Full EM后要进行若干次lazy EM，可设置次数
-            CntOfLazy = 2;
+            CntOfLazy = 1;
 
             while (CntOfLazy != 0 && counterOfIterations < numOfIterations && isContinue) {
                 CntOfLazy--;
@@ -151,15 +151,6 @@ public class Kmeans2 {
                     }
                     // 更新最短距离
                     laseErr[index] = minDist;
-//                    if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
-//                        System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-//                        bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-//                        bw.newLine();
-//                        batchError = 0;
-//                        hasPro = 0;
-//                        changeTagCount = 0;
-//                        centers = updateCenters(aggOfSum, aggOfCounter);//Maximization step
-//                    }
                 }// end E-step
                 updateCenters(aggOfSum, aggOfCounter);
                 System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
