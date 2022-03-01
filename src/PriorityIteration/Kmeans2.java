@@ -100,7 +100,7 @@ public class Kmeans2 {
                 }
                 laseErr[index] = minDist;
 
-                if (hasPro >= batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
+                if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
                     System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                     bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                     bw.newLine();
