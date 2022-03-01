@@ -62,13 +62,30 @@ public class Kmeans2 {
                 // Expectation step
                 minDist = Double.MAX_VALUE;
                 tag = -1;
-                for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
-                    dist = distance(points.get(index), centers[i]);
-                    if (dist < minDist) {
-                        minDist = dist;
-                        tag = i;
-                    }
-                }//for distance
+                // 减少计算，如果距离没有变大的话
+//                if (dataProCounters > 1) {
+//                    dist = distance(points.get(index), centers[tags[index]]);
+//                    if(dist <= laseErr[index]){
+//                        tag = tags[index];
+//                        minDist = dist;
+//                    }else{
+//                        for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
+//                            dist = distance(points.get(index), centers[i]);
+//                            if (dist < minDist) {
+//                                minDist = dist;
+//                                tag = i;
+//                            }
+//                        }//for distance
+//                    }
+//                }else{
+                    for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
+                        dist = distance(points.get(index), centers[i]);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            tag = i;
+                        }
+                    }//for distance
+//                }
 
                 if (tags[index] != tag) {
                     aggregate(aggOfSum, aggOfCounter, points.get(index),
