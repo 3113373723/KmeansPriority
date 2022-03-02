@@ -48,6 +48,8 @@ public class Kmeans2 {
         boolean isContinue = true; //设置一个变量控制迭代是否继续，当达到收敛值时改为false
         double sigma = 1;
         double baseErrLimit = 311555;
+        int[] proTimes = new int[points.size()]; // 记录每个样本点处理的次数，次数少的点可以适当提高一下使用
+        double proLimit = 0.01; // 样本处理次数/总轮次数 < proLimit 可以考虑加入训练
 
         /** 获取当前系统时间*/
         long startTime = System.currentTimeMillis();
@@ -59,6 +61,7 @@ public class Kmeans2 {
             // FULL EM
             for (int index = 0; index < points.size(); index++) { //遍历全部数据
                 if (counterOfIterations > numOfIterations) break;
+                proTimes[index]++; // 保证次数不为0
                 //if(toHalt[index]) continue;
                 // Expectation step
                 minDist = Double.MAX_VALUE;
@@ -102,8 +105,8 @@ public class Kmeans2 {
                 laseErr[index] = minDist;
 
                 if (hasPro == batchSize && dataProCounters > 1) { //处理数量达到一个batch的数量，进行一次更新
-                    System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-                    bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                    System.out.println("*MiniBatch* Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                    bw.write("*MiniBatch* Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                     bw.newLine();
                     batchError = 0;
                     hasPro = 0;
@@ -114,8 +117,8 @@ public class Kmeans2 {
             }//for
             // 不明白为什么updateCenters(M-step)只在dataProCounters==1时运行过一次，个人认为每遍都需要更新
             if (dataProCounters == 1) {
-                System.out.println("*MiniBatch* Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-                bw.write("*MiniBatch* Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                System.out.println("*fullBatch* Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                bw.write("*fullBatch* Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.newLine();
                 baseErr = batchError;
                 batchError = 0;
@@ -142,7 +145,8 @@ public class Kmeans2 {
                 }
                 AverageDis /= laseErr.length;//这里用的是小于averageDIs的数据为优先级高的，也可以乘以某个参数进一步限制数据点个数
                 for (int index = 0; index < points.size(); index++) { //遍历全部数据
-                    if (laseErr[index] > sigma * AverageDis) continue;
+                    if (laseErr[index] > sigma * AverageDis || (double)proTimes[index]/dataProCounters < proLimit) continue;
+                    proTimes[index]++;
                     minDist = Double.MAX_VALUE;
                     tag = -1;
                     for (int i = 0; i < numOfCenters; i++) { // for a point, find minDistance and change;
