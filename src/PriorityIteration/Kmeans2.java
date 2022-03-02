@@ -47,6 +47,7 @@ public class Kmeans2 {
         double[] laseErr = new double[points.size()];
         boolean isContinue = true; //设置一个变量控制迭代是否继续，当达到收敛值时改为false
         double sigma = 1;
+        double baseErrLimit = 311555;
 
         /** 获取当前系统时间*/
         long startTime = System.currentTimeMillis();
@@ -122,7 +123,7 @@ public class Kmeans2 {
                 changeTagCount = 0;
                 centers = updateCenters(aggOfSum, aggOfCounter);//Maximization step
             }
-            if (baseErr < 311555) isContinue = false;
+            if (baseErr < baseErrLimit) isContinue = false;
             counterOfIterations++;
 
             // Lazy EM
@@ -177,7 +178,7 @@ public class Kmeans2 {
                 hasPro = 0;
                 changeTagCount = 0;
                 counterOfIterations++;
-                if (baseErr < 311555) isContinue = false;
+                if (baseErr < baseErrLimit) isContinue = false;
             }// end Lazy EM
 
         } //while
