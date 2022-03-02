@@ -114,8 +114,8 @@ public class Kmeans2 {
             }//for
             // 不明白为什么updateCenters(M-step)只在dataProCounters==1时运行过一次，个人认为每遍都需要更新
             if (dataProCounters == 1) {
-                System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-                bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                System.out.println("*MiniBatch* Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                bw.write("*MiniBatch* Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.newLine();
                 baseErr = batchError;
                 batchError = 0;
@@ -171,8 +171,8 @@ public class Kmeans2 {
                     laseErr[index] = minDist;
                 }// end E-step
                 updateCenters(aggOfSum, aggOfCounter);
-                System.out.println(" Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
-                bw.write(" Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                System.out.println("*lazyBatch* Iteration is : " + counterOfIterations + " point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
+                bw.write("*lazyBatch* Iteration is : " + counterOfIterations + "point change tag counts is : " + changeTagCount + " this batch errSum is : " + batchError + " errSum is : " + baseErr);
                 bw.newLine();
                 batchError = 0;
                 hasPro = 0;
